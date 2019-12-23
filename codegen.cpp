@@ -234,35 +234,39 @@ Value* FuncStatement::codeGen(CodeGenContext& context){
 	else
 		retType = typeOf(type, context);
 
-	VariableList::const_iterator it;
-	for( it = arguments.begin(); it != arguments.end(); it++ ){
-		argTypes.push_back(typeOf(*(**it).type,context));
-	}
-	retType = typeOf(type, context);
 
 	FunctionType *FT = FunctionType::get(retType, makeArrayRef(argTypes), false);
-	Function *function = Function::Create(FT, Function::InternalLinkage, id.name, context.module);
-	BasicBlock* bblock = BasicBlock::Create(MyContext,"entry",function,0);
+	Function *function = Function::Create(FT, GlobalValue::ExternalLinkage, id.name, context.module);
 
-	context.pushBlock(bblock);
+	if( !this->isExternal ){
+		BasicBlock* basicBlock = BasicBlock::Create(MyContext, "entry", function, nullptr);
+		context.builder.SetInsertPoint(basicBlock);
+		context.pushBlock(basicBlock);
+		auto origin_arg = this->arguments.begin();
+		for(auto &ir_arg_it: function->args()){
+			ir_arg_it.setName((*origin_arg)->id.name);
+			Value* argAlloc;
+			if( (*origin_arg)->type->isArray )
+				argAlloc = context.builder.CreateAlloca(PointerType::get(context.typeSystem.getVarType((*origin_arg)->type->name), 0));
+			else
+				argAlloc = (*origin_arg)->codeGen(context);
 
-	Function::arg_iterator argsValues = function->arg_begin();
-	Value* argumentValue;
-	for( it = arguments.begin(); it != arguments.end(); it++ ){
-		(**it).codeGen(context);
-		argumentValue = &*argsValues;
-		argumentValue->setName((*it)->id.name);
-		StoreInst *inst = new StoreInst(argumentValue, context.locals()[(*it)->id.name], false, bblock);
+			context.builder.CreateStore(&ir_arg_it, argAlloc, false);
+			context.setSymbolValue((*origin_arg)->id.name, argAlloc);
+			context.setSymbolType((*origin_arg)->id.name, (*origin_arg)->type);
+			context.setFuncArg((*origin_arg)->id.name, true);
+			origin_arg++;
+		}
+
+		this->block.codeGen(context);
+		if( context.getCurrentValue() ){
+			context.builder.CreateRet(context.getCurrentValue());
+		} else{
+			return LogErrorV("Function block return value not founded");
+			}
+		context.popBlock();
 	}
 
-	block.codeGen(context);
-	if( context. getCurrentValue() ){
-            context.builder.CreateRet(context.getCurrentValue());
-        } else{
-            return LogErrorV("Function block return value not founded");
-        }
-	context.popBlock();
-	std::cout << "Creating function: " << id.name << endl;
 	return function;
 
 }
@@ -273,8 +277,11 @@ Value* IfStatement::codeGen(CodeGenContext& context){
 	if (!conValue){
 		return nullptr;
 	}
+
 	conValue = CastToBoolean(context,conValue);
+	cout<<"testing 1\n";
 	Function* theFunction = context.builder.GetInsertBlock()->getParent();
+	cout<<"testing 2\n";
 
 	BasicBlock *conditionB = BasicBlock::Create(MyContext, "then", theFunction);
 	BasicBlock *falseB = BasicBlock::Create(MyContext, "false");

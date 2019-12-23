@@ -1,0 +1,24 @@
+int { return TOKEN(Int); }
+float { return TOKEN(Float); }
+double      { return TOKEN(Double); }
+auto        { return TOKEN(Auto); }
+break       { return TOKEN(Break); }
+case        { return TOKEN(Case); }
+const       { return TOKEN(Const); }
+else        { return TOKEN(Else); }
+for         { return TOKEN(For); }
+if          { return TOKEN(If); }
+long        { return TOKEN(Long); }
+return      { return TOKEN(Return); }
+short       { return TOKEN(Short); }
+signed      { return TOKEN(Signed); }
+char        { return TOKEN(Char); }
+unsigned    { return TOKEN(Unsigned); }
+
+%token<token> Int Float Double Auto Break Case Const Else For If Long Return Short Signed Char Unsigned
+{ $$ = new Identifier(*$1); delete $1; }
+
+int func(int a, int b){	if( a > b ){ return func(b * 0.5) }else if( a == b ){ return func(a * b) }else{ return 0 }}
+ 
+int testArray(){ int[10] oneDim = [1,2,3,4] int i for(i=0; i<3; i=i+1){ oneDim[i] = 0 } return 0 }
+

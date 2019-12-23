@@ -89,6 +89,10 @@ class CodeGenContext{
        			 }
        			 return false;
 		}
+		void setFuncArg(string name,bool value){
+			cout << "Set " << name << " as func arg" << endl;
+			blocks.back()->isFuncArg[name] = value;
+		}
 		void setArraySize(string name, std::vector<uint64_t> value){
 			cout << "setArraySize: " << name << ": " << value.size() << endl;
 			blocks.back()->arraySizes[name] = value;

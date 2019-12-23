@@ -26,6 +26,7 @@ short       {SAVE_TOKEN; return Short; }
 signed      {SAVE_TOKEN; return Signed; }
 char        {SAVE_TOKEN; return Char; }
 unsigned    {SAVE_TOKEN; return Unsigned; }
+while	{ return TOKEN(While); }
 [ \t\n]	;
 [a-zA-Z_][a-zA-Z0-9_]*	{SAVE_TOKEN;return ID;}
 [0-9]+	{SAVE_TOKEN;return INT;}
@@ -46,7 +47,7 @@ unsigned    {SAVE_TOKEN; return Unsigned; }
 "{"	{return TOKEN(LBRACE);}
 "}"	{return TOKEN(RBRACE);}
 "["	{return TOKEN(LMBRA);}
-"]"	{return TOKEN(LMBRA);}
+"]"	{return TOKEN(RMBRA);}
 ";"	{return TOKEN(SEMI);}
 ","	{return TOKEN(COMMA);}
 "\."	{return TOKEN(DOT);}
