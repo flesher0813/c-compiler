@@ -20,6 +20,7 @@ static Value* CastToBoolean(CodeGenContext& context,Value* condValue){
 
 static Value* calcArrayIndex(shared_ptr<ArrayIndex> index, CodeGenContext &context){
     auto sizeVec = context.getArraySize(index->arrayName.name);
+    cout << index->arrayName.name <<endl;
     cout << "sizeVec:" << sizeVec.size() << ", expressions: " << index->arrayList->size() << endl;
     assert(sizeVec.size() > 0 && sizeVec.size() == index->arrayList->size());
 
@@ -134,8 +135,14 @@ Value* BinaryExpression::codeGen(CodeGenContext& context){
 	switch (op) {
 		case ADD: 	return fp ? context.builder.CreateFAdd(L, R, "addftmp") : context.builder.CreateAdd(L, R, "addtmp");
 		case SUB: 	return fp ? context.builder.CreateFSub(L, R, "subftmp") : context.builder.CreateSub(L, R, "subtmp");
-		case MUL: 	return fp ? context.builder.CreateFMul(L, R, "mulftmp") : context.builder.CreateAdd(L, R, "multmp");
-		case DIV: 	return fp ? context.builder.CreateFDiv(L, R, "divftmp") : context.builder.CreateAdd(L, R, "divtmp");
+		case MUL: 	return fp ? context.builder.CreateFMul(L, R, "mulftmp") : context.builder.CreateMul(L, R, "multmp");
+		case DIV: 	return fp ? context.builder.CreateFDiv(L, R, "divftmp") : context.builder.CreateSDiv(L, R, "divtmp");
+		case EQEQ:	return fp ? context.builder.CreateFCmpOEQ(L, R, "cmpftmp") : context.builder.CreateICmpEQ(L, R, "cmpftmp");
+		case NE:	return fp ? context.builder.CreateFCmpONE(L, R, "cmpftmp") : context.builder.CreateICmpNE(L, R, "cmpftmp");
+		case LT:	return fp ? context.builder.CreateFCmpULT(L, R, "cmpftmp") : context.builder.CreateICmpULT(L, R, "cmpftmp");
+		case LE:	return fp ? context.builder.CreateFCmpULE(L, R, "cmpftmp") : context.builder.CreateICmpULE(L, R, "cmpftmp");
+		case GT:	return fp ? context.builder.CreateFCmpUGT(L, R, "cmpftmp") : context.builder.CreateICmpUGT(L, R, "cmpftmp");
+		case GE:	return fp ? context.builder.CreateFCmpUGE(L, R, "cmpftmp") : context.builder.CreateICmpUGE(L, R, "cmpftmp");
 		default:
 			return LogErrorV("Unknown binary operator");
 				

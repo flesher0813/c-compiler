@@ -22,3 +22,4 @@ int func(int a, int b){	if( a > b ){ return func(b * 0.5) }else if( a == b ){ re
  
 int testArray(){ int[10] oneDim = [1,2,3,4] int i for(i=0; i<3; i=i+1){ oneDim[i] = 0 } return 0 }
 
+int huiwen(char[12] str,int length = 12){ int i for(i = 0;i < (length / 2); i = i + 1){ if(str[i] != str[length - i - 1]){ return 0 } } return 1  }

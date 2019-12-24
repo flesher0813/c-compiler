@@ -26,11 +26,12 @@ short       {SAVE_TOKEN; return Short; }
 signed      {SAVE_TOKEN; return Signed; }
 char        {SAVE_TOKEN; return Char; }
 unsigned    {SAVE_TOKEN; return Unsigned; }
+bool {SAVE_TOKEN; return Bool; }
 while	{ return TOKEN(While); }
 [ \t\n]	;
 [a-zA-Z_][a-zA-Z0-9_]*	{SAVE_TOKEN;return ID;}
 [0-9]+	{SAVE_TOKEN;return INT;}
-[0-9]+\.[0-9]*	{SAVE_TOKEN;return DOUBLE;}
+[0-9]+\.[0-9]+	{SAVE_TOKEN;return DOUBLE;}
 "="	 {return TOKEN(EQ);}
 ">"	 {return TOKEN(GT);}
 "<"	 {return TOKEN(LT);}

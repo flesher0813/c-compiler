@@ -94,7 +94,7 @@ class CodeGenContext{
 			blocks.back()->isFuncArg[name] = value;
 		}
 		void setArraySize(string name, std::vector<uint64_t> value){
-			cout << "setArraySize: " << name << ": " << value.size() << endl;
+			cout << "1111111111111111111111111111111111111111111111111111111111111setArraySize: " << name << ": " << value.size() << endl;
 			blocks.back()->arraySizes[name] = value;
 		}
 		std::vector<uint64_t> getArraySize(string name){
